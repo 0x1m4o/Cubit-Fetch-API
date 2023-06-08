@@ -14,9 +14,16 @@ class AuthError extends AuthState {
   });
 }
 
-class AuthSuccess extends AuthState {
+class AuthLoginSuccess extends AuthState {
   final LoginResponse data;
-  AuthSuccess({
+  AuthLoginSuccess({
+    required this.data,
+  });
+}
+
+class AuthRegisterSuccess extends AuthState {
+  final RegisterResponse data;
+  AuthRegisterSuccess({
     required this.data,
   });
 }

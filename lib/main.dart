@@ -1,4 +1,6 @@
 import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
+import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
+import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
 import 'package:cubitfetchapi/router/app_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthCubit(),
+        ),
+        BlocProvider(
+          create: (context) => PagenavCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ResponseCubit(),
+        ),
+      ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: router,

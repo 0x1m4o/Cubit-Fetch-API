@@ -1,5 +1,7 @@
 import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
+import 'package:cubitfetchapi/partials/toggle.dart';
 import 'package:cubitfetchapi/models/login_request.dart';
+import 'package:cubitfetchapi/pages/homepage.dart';
 import 'package:cubitfetchapi/router/page_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +15,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController emailC = TextEditingController();
+  TextEditingController userC = TextEditingController();
   TextEditingController passC = TextEditingController();
   @override
   void dispose() {
-    emailC.clear();
+    userC.clear();
     passC.clear();
     super.dispose();
   }
@@ -40,10 +42,18 @@ class _LoginPageState extends State<LoginPage> {
                     content: Text(state.errorMsg),
                   );
                 });
-          } else if (state is AuthSuccess) {
-            GoRouter.of(context).go(PageName.home);
+          } else if (state is AuthLoginSuccess) {
+            print(state.data);
+
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomePage(
+                loginResponse: state.data,
+                userResponse: state.data.username,
+                tokenResponse: state.data.token,
+              ),
+            ));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text('Login Success'),
+              content: Text(state.data.msg),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -57,36 +67,33 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         builder: (context, state) {
-          return state is AuthLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: ListView(children: [
-                    TextField(
-                      controller: emailC,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'johndoe@example.com',
-                          labelText: 'Email'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextField(
-                      controller: passC,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter your Password here',
-                          labelText: 'Password'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    loginButton(context)
-                  ]),
-                );
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: ListView(children: [
+              animatedToggle(context),
+              TextField(
+                controller: userC,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'johndoe',
+                    labelText: 'Username'),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: passC,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter your Password here',
+                    labelText: 'Password'),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              loginButton(context)
+            ]),
+          );
         },
       ),
     );
@@ -96,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
     return ElevatedButton(
         onPressed: () {
           context.read<AuthCubit>().signInWithEmailPassword(
-              LoginRequest(email: emailC.text, password: passC.text));
+              LoginRequest(username: userC.text, password: passC.text));
         },
         child: const Text('Submit'));
   }
