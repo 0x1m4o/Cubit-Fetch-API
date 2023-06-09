@@ -70,21 +70,21 @@ Widget homePageLoading() {
 }
 
 Widget homePageError(BuildContext context, LoginResponse loginResponse) {
-  return Container(
+  return SizedBox(
     width: double.infinity,
     child: Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text("Something worng"),
+        const Text("Something worng"),
         IconButton(
           onPressed: () {
             context
                 .read<ResponseCubit>()
                 .getAllDataOfUser(loginResponse.username, loginResponse.token);
           },
-          icon: Icon(Icons.replay),
+          icon: const Icon(Icons.replay),
         )
       ],
     ),

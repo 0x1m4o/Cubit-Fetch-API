@@ -43,8 +43,6 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 });
           } else if (state is AuthLoginSuccess) {
-            print(state.data);
-
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomePage(
                 loginResponse: state.data,
@@ -69,30 +67,34 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           return Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView(children: [
-              animatedToggle(context),
-              TextField(
-                controller: userC,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'johndoe',
-                    labelText: 'Username'),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: passC,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter your Password here',
-                    labelText: 'Password'),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              loginButton(context)
-            ]),
+            child: ScrollConfiguration(
+              behavior:
+                  const MaterialScrollBehavior().copyWith(overscroll: false),
+              child: ListView(children: [
+                animatedToggle(context),
+                TextField(
+                  controller: userC,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'johndoe',
+                      labelText: 'Username'),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextField(
+                  controller: passC,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Enter your Password here',
+                      labelText: 'Password'),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                loginButton(context)
+              ]),
+            ),
           );
         },
       ),

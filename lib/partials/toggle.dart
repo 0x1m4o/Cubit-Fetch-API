@@ -30,10 +30,7 @@ Widget animatedToggle(BuildContext context) {
           iconBuilder: (value, size) {
             return GestureDetector(
               onTap: () {
-                // Sign Up
                 context.read<PagenavCubit>().toggleText(value);
-
-                // Sign In
                 context.read<PagenavCubit>().state.currentVal == 'Sign Up'
                     ? GoRouter.of(context).go(PageName.register)
                     : GoRouter.of(context).go(PageName.login);
@@ -43,14 +40,16 @@ Widget animatedToggle(BuildContext context) {
                 value,
                 style: TextStyle(
                     fontSize: size.width * 0.55,
-                    color: Colors.black54,
+                    color:
+                        context.watch<PagenavCubit>().state.currentVal == value
+                            ? Colors.white
+                            : Colors.black54,
                     fontWeight: FontWeight.bold),
               )),
             );
           },
           onChanged: (value) {
             context.read<PagenavCubit>().toggleText(value);
-
             context.read<PagenavCubit>().state.currentVal == 'Sign Up'
                 ? GoRouter.of(context).go(PageName.register)
                 : GoRouter.of(context).go(PageName.login);
