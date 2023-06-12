@@ -1,6 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 part 'pagenav_state.dart';
 
 class PagenavCubit extends Cubit<PagenavState> {

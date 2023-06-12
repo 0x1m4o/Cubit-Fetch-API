@@ -12,7 +12,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   void signInWithEmailPassword(LoginRequest loginRequest) async {
     emit(AuthLoading());
-
     try {
       final dataResponse =
           await AuthRepository().signUser(loginRequest: loginRequest);
@@ -25,7 +24,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   void registerWithEmailPassword(RegisterRequest registerRequest) async {
     emit(AuthLoading());
-
     try {
       final dataResponse =
           await AuthRepository().registerUser(registerRequest: registerRequest);

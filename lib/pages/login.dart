@@ -1,11 +1,14 @@
+// ignore_for_file: avoid_print
+
 import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
 import 'package:cubitfetchapi/partials/toggle.dart';
 import 'package:cubitfetchapi/models/login_request.dart';
 import 'package:cubitfetchapi/pages/homepage.dart';
-import 'package:cubitfetchapi/router/page_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:particles_flutter/particles_flutter.dart';
+import '../partials/text_form.dart';
+import '../partials/auth_form.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,89 +27,135 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login Page'),
-      ),
-      body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthLoading) {
-            print('Loading');
-          } else if (state is AuthError) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Error'),
-                    content: Text(state.errorMsg),
-                  );
-                });
-          } else if (state is AuthLoginSuccess) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomePage(
-                loginResponse: state.data,
-                userResponse: state.data.username,
-                tokenResponse: state.data.token,
-              ),
-            ));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(state.data.msg),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height - 100,
-                  right: 20,
-                  left: 20),
-            ));
-          }
-        },
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: ScrollConfiguration(
-              behavior:
-                  const MaterialScrollBehavior().copyWith(overscroll: false),
-              child: ListView(children: [
-                animatedToggle(context),
-                TextField(
-                  controller: userC,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'johndoe',
-                      labelText: 'Username'),
+    return SafeArea(
+      child: Scaffold(
+        body: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthLoading) {
+              print('Loading');
+            } else if (state is AuthError) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Error'),
+                      content: Text(state.errorMsg),
+                    );
+                  });
+            } else if (state is AuthLoginSuccess) {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomePage(
+                  loginResponse: state.data,
+                  userResponse: state.data.username,
+                  tokenResponse: state.data.token,
                 ),
-                const SizedBox(
-                  height: 20,
+              ));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.data.msg),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                TextField(
-                  controller: passC,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter your Password here',
-                      labelText: 'Password'),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                loginButton(context)
-              ]),
-            ),
-          );
-        },
+                margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height - 100,
+                    right: 20,
+                    left: 20),
+              ));
+            }
+          },
+          builder: (context, state) {
+            return CircularParticle(
+              awayRadius: 50,
+              numberOfParticles: 300,
+              speedOfParticles: 1,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              onTapAnimation: true,
+              particleColor: Colors.grey,
+              awayAnimationDuration: const Duration(milliseconds: 100),
+              maxParticleSize: 5,
+              isRandSize: false,
+              isRandomColor: false,
+              awayAnimationCurve: Curves.bounceInOut,
+              enableHover: true,
+              hoverColor: Colors.white,
+              hoverRadius: 80,
+              key: UniqueKey(),
+              connectDots: true,
+            );
+          },
+        ),
+        bottomNavigationBar: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+            child: BottomAppBar(
+                elevation: 5,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(182, 63, 164, 227),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: ScrollConfiguration(
+                    behavior: const MaterialScrollBehavior()
+                        .copyWith(overscroll: false),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Profile Card',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                          animatedToggle(context),
+                          Expanded(
+                            child: ListView(children: [
+                              TextForm(
+                                  icon: Icons.person_outlined,
+                                  controller: userC,
+                                  label: 'Username',
+                                  hint: 'Enter your username'),
+                              TextForm(
+                                  icon: Icons.password,
+                                  controller: passC,
+                                  label: 'Password',
+                                  hint: 'Enter your Password'),
+                              loginButton(context),
+                            ]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )),
+          ),
+        ),
       ),
     );
   }
 
-  ElevatedButton loginButton(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-          context.read<AuthCubit>().signInWithEmailPassword(
-              LoginRequest(username: userC.text, password: passC.text));
-        },
-        child: const Text('Submit'));
+  Widget loginButton(BuildContext context) {
+    return SizedBox(
+      height: 55,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 73, 66, 228)),
+          onPressed: () {
+            context.read<AuthCubit>().signInWithEmailPassword(
+                LoginRequest(username: userC.text, password: passC.text));
+          },
+          child: const Text('Submit')),
+    );
   }
 }

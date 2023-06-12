@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: must_be_immutable
+
 import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
 import 'package:cubitfetchapi/models/user_response.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
   LoginResponse loginResponse;
 
   HomePage({
+    super.key,
     this.tokenResponse = '',
     required this.loginResponse,
     this.userResponse = '',

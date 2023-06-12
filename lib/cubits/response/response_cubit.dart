@@ -8,7 +8,6 @@ part 'response_cubit.freezed.dart';
 class ResponseCubit extends Cubit<ResponseState> {
   ProfileRepository profileRepository = ProfileRepository();
   ResponseCubit() : super(ResponseState.initial());
-  @override
   void getAllDataOfUser(String username, String token) async {
     emit(ResponseState.loading());
 

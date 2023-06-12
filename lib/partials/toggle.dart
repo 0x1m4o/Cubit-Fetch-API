@@ -25,7 +25,7 @@ Widget animatedToggle(BuildContext context) {
               offset: Offset(0, 1.5),
             ),
           ],
-          colorBuilder: (b) => const Color.fromARGB(255, 13, 110, 253),
+          colorBuilder: (b) => Color.fromARGB(255, 106, 158, 237),
           innerColor: Colors.white,
           iconBuilder: (value, size) {
             return GestureDetector(
@@ -42,7 +42,7 @@ Widget animatedToggle(BuildContext context) {
                     fontSize: size.width * 0.55,
                     color:
                         context.watch<PagenavCubit>().state.currentVal == value
-                            ? Colors.white
+                            ? Colors.black87
                             : Colors.black54,
                     fontWeight: FontWeight.bold),
               )),
