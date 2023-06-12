@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:particles_flutter/particles_flutter.dart';
 import '../partials/text_form.dart';
-import '../partials/auth_form.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,10 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height - 100,
-                    right: 20,
-                    left: 20),
+                margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
               ));
             }
           },

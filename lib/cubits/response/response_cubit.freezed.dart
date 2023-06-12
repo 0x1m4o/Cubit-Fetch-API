@@ -22,6 +22,7 @@ mixin _$ResponseState {
     required TResult Function() loading,
     required TResult Function(String errorMsg) error,
     required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,6 +31,7 @@ mixin _$ResponseState {
     TResult? Function()? loading,
     TResult? Function(String errorMsg)? error,
     TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +40,7 @@ mixin _$ResponseState {
     TResult Function()? loading,
     TResult Function(String errorMsg)? error,
     TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +50,7 @@ mixin _$ResponseState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -55,6 +59,7 @@ mixin _$ResponseState {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -63,6 +68,7 @@ mixin _$ResponseState {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -127,6 +133,7 @@ class _$_Initial implements _Initial {
     required TResult Function() loading,
     required TResult Function(String errorMsg) error,
     required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
   }) {
     return initial();
   }
@@ -138,6 +145,7 @@ class _$_Initial implements _Initial {
     TResult? Function()? loading,
     TResult? Function(String errorMsg)? error,
     TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
   }) {
     return initial?.call();
   }
@@ -149,6 +157,7 @@ class _$_Initial implements _Initial {
     TResult Function()? loading,
     TResult Function(String errorMsg)? error,
     TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -164,6 +173,7 @@ class _$_Initial implements _Initial {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
   }) {
     return initial(this);
   }
@@ -175,6 +185,7 @@ class _$_Initial implements _Initial {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
   }) {
     return initial?.call(this);
   }
@@ -186,6 +197,7 @@ class _$_Initial implements _Initial {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -240,6 +252,7 @@ class _$_Loading implements _Loading {
     required TResult Function() loading,
     required TResult Function(String errorMsg) error,
     required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
   }) {
     return loading();
   }
@@ -251,6 +264,7 @@ class _$_Loading implements _Loading {
     TResult? Function()? loading,
     TResult? Function(String errorMsg)? error,
     TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
   }) {
     return loading?.call();
   }
@@ -262,6 +276,7 @@ class _$_Loading implements _Loading {
     TResult Function()? loading,
     TResult Function(String errorMsg)? error,
     TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -277,6 +292,7 @@ class _$_Loading implements _Loading {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
   }) {
     return loading(this);
   }
@@ -288,6 +304,7 @@ class _$_Loading implements _Loading {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
   }) {
     return loading?.call(this);
   }
@@ -299,6 +316,7 @@ class _$_Loading implements _Loading {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -379,6 +397,7 @@ class _$_Error implements _Error {
     required TResult Function() loading,
     required TResult Function(String errorMsg) error,
     required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
   }) {
     return error(errorMsg);
   }
@@ -390,6 +409,7 @@ class _$_Error implements _Error {
     TResult? Function()? loading,
     TResult? Function(String errorMsg)? error,
     TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
   }) {
     return error?.call(errorMsg);
   }
@@ -401,6 +421,7 @@ class _$_Error implements _Error {
     TResult Function()? loading,
     TResult Function(String errorMsg)? error,
     TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -416,6 +437,7 @@ class _$_Error implements _Error {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
   }) {
     return error(this);
   }
@@ -427,6 +449,7 @@ class _$_Error implements _Error {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
   }) {
     return error?.call(this);
   }
@@ -438,6 +461,7 @@ class _$_Error implements _Error {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -524,6 +548,7 @@ class _$_Success implements _Success {
     required TResult Function() loading,
     required TResult Function(String errorMsg) error,
     required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
   }) {
     return success(userResponse);
   }
@@ -535,6 +560,7 @@ class _$_Success implements _Success {
     TResult? Function()? loading,
     TResult? Function(String errorMsg)? error,
     TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
   }) {
     return success?.call(userResponse);
   }
@@ -546,6 +572,7 @@ class _$_Success implements _Success {
     TResult Function()? loading,
     TResult Function(String errorMsg)? error,
     TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -561,6 +588,7 @@ class _$_Success implements _Success {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
   }) {
     return success(this);
   }
@@ -572,6 +600,7 @@ class _$_Success implements _Success {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
   }) {
     return success?.call(this);
   }
@@ -583,6 +612,7 @@ class _$_Success implements _Success {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -599,4 +629,124 @@ abstract class _Success implements ResponseState {
   @JsonKey(ignore: true)
   _$$_SuccessCopyWith<_$_Success> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$_UpdateSuccessCopyWith<$Res> {
+  factory _$$_UpdateSuccessCopyWith(
+          _$_UpdateSuccess value, $Res Function(_$_UpdateSuccess) then) =
+      __$$_UpdateSuccessCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$_UpdateSuccessCopyWithImpl<$Res>
+    extends _$ResponseStateCopyWithImpl<$Res, _$_UpdateSuccess>
+    implements _$$_UpdateSuccessCopyWith<$Res> {
+  __$$_UpdateSuccessCopyWithImpl(
+      _$_UpdateSuccess _value, $Res Function(_$_UpdateSuccess) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$_UpdateSuccess implements _UpdateSuccess {
+  _$_UpdateSuccess();
+
+  @override
+  String toString() {
+    return 'ResponseState.updsuccess()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$_UpdateSuccess);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(String errorMsg) error,
+    required TResult Function(UserResponse userResponse) success,
+    required TResult Function() updsuccess,
+  }) {
+    return updsuccess();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(String errorMsg)? error,
+    TResult? Function(UserResponse userResponse)? success,
+    TResult? Function()? updsuccess,
+  }) {
+    return updsuccess?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(String errorMsg)? error,
+    TResult Function(UserResponse userResponse)? success,
+    TResult Function()? updsuccess,
+    required TResult orElse(),
+  }) {
+    if (updsuccess != null) {
+      return updsuccess();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
+    required TResult Function(_Success value) success,
+    required TResult Function(_UpdateSuccess value) updsuccess,
+  }) {
+    return updsuccess(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_UpdateSuccess value)? updsuccess,
+  }) {
+    return updsuccess?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Success value)? success,
+    TResult Function(_UpdateSuccess value)? updsuccess,
+    required TResult orElse(),
+  }) {
+    if (updsuccess != null) {
+      return updsuccess(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _UpdateSuccess implements ResponseState {
+  factory _UpdateSuccess() = _$_UpdateSuccess;
 }

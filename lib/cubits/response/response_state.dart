@@ -6,4 +6,5 @@ abstract class ResponseState with _$ResponseState {
   factory ResponseState.loading() = _Loading;
   factory ResponseState.error(String errorMsg) = _Error;
   factory ResponseState.success(UserResponse userResponse) = _Success;
+  factory ResponseState.updsuccess() = _UpdateSuccess;
 }

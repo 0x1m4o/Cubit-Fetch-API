@@ -1,12 +1,25 @@
+import 'package:hive/hive.dart';
+part 'user_response.g.dart';
+
+@HiveType(typeId: 1)
 class UserResponse {
+  @HiveField(0)
   final String fullname;
+  @HiveField(1)
   final String city;
+  @HiveField(2)
   final String country;
+  @HiveField(3)
   final String instagram;
+  @HiveField(4)
   final String about;
+  @HiveField(5)
   final String facebook;
+  @HiveField(6)
   final String twitter;
+  @HiveField(7)
   final String job;
+  @HiveField(8)
   final String avatar;
   UserResponse({
     required this.fullname,

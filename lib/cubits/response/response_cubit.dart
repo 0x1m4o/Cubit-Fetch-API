@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cubitfetchapi/models/user_response.dart';
 import 'package:cubitfetchapi/repository/profile_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -14,5 +14,15 @@ class ResponseCubit extends Cubit<ResponseState> {
     final result = await profileRepository.getAllData(username, token);
     result.fold((left) => emit(ResponseState.error(left)),
         (right) => emit(ResponseState.success(right)));
+  }
+
+  void editDataUser(
+      String username, String token, UserResponse throwUserResponse) async {
+    emit(ResponseState.loading());
+
+    final result =
+        await profileRepository.editData(username, token, throwUserResponse);
+    result.fold((left) => emit(ResponseState.error(left)),
+        (right) => emit(ResponseState.updsuccess()));
   }
 }

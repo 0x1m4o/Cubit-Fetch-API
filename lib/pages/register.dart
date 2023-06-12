@@ -1,19 +1,26 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, must_be_immutable, use_build_context_synchronously
 
 import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
+import 'package:cubitfetchapi/models/login_response.dart';
+import 'package:cubitfetchapi/models/user_response.dart';
+import 'package:cubitfetchapi/pages/homepage.dart';
 import 'package:cubitfetchapi/partials/toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:particles_flutter/particles_flutter.dart';
-
 import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
 import 'package:cubitfetchapi/models/register_request.dart';
 import 'package:cubitfetchapi/router/page_name.dart';
 import '../partials/text_form.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  late Box box;
+  UserResponse? finalUserResponse;
+  LoginResponse? finalLoginResponse;
+
+  RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -35,6 +42,31 @@ class _RegisterPageState extends State<RegisterPage> {
     countryC.clear();
     jobC.clear();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  void getUserData() async {
+    widget.box = await Hive.openBox('box');
+    widget.finalUserResponse = await widget.box.get('userResp');
+    widget.finalLoginResponse = await widget.box.get('loginResp');
+
+    if (widget.finalLoginResponse != null &&
+        widget.finalLoginResponse!.username.isNotEmpty) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => HomePage(
+          loginResponse: widget.finalLoginResponse,
+          userResponse: widget.finalLoginResponse!.username,
+          tokenResponse: widget.finalLoginResponse!.token,
+        ),
+      ));
+    } else {
+      print("Null");
+    }
   }
 
   @override
