@@ -25,7 +25,7 @@ Widget animatedToggle(BuildContext context) {
               offset: Offset(0, 1.5),
             ),
           ],
-          colorBuilder: (b) => Color.fromARGB(255, 106, 158, 237),
+          colorBuilder: (b) => const Color.fromARGB(255, 106, 158, 237),
           innerColor: Colors.white,
           iconBuilder: (value, size) {
             return GestureDetector(

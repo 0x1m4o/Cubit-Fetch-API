@@ -23,6 +23,6 @@ class ResponseCubit extends Cubit<ResponseState> {
     final result =
         await profileRepository.editData(username, token, throwUserResponse);
     result.fold((left) => emit(ResponseState.error(left)),
-        (right) => emit(ResponseState.updsuccess()));
+        (right) => emit(ResponseState.editSuccess()));
   }
 }

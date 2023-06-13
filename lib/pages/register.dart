@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
     getUserData();
   }
 
-  void getUserData() async {
+  Future<void> getUserData() async {
     widget.box = await Hive.openBox('box');
     widget.finalUserResponse = await widget.box.get('userResp');
     widget.finalLoginResponse = await widget.box.get('loginResp');
@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
         widget.finalLoginResponse!.username.isNotEmpty) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HomePage(
-          loginResponse: widget.finalLoginResponse,
+          loginResponse: widget.finalLoginResponse!,
           userResponse: widget.finalLoginResponse!.username,
           tokenResponse: widget.finalLoginResponse!.token,
         ),

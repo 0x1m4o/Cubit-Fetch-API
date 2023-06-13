@@ -35,40 +35,17 @@ class ProfileRepository {
     }
   }
 
-  Future<Either<String, Object>> editData(
+  Future<Either<String, String>> editData(
       String username, String token, UserResponse throwuserResponse) async {
     try {
       _dio.interceptors
           .add(LogInterceptor(requestBody: true, responseBody: true));
 
       Response response;
-      final requestData = {
-        'fullname': throwuserResponse.fullname,
-        'city': throwuserResponse.city,
-        'country': throwuserResponse.country,
-        'job': throwuserResponse.job,
-        'twitter': throwuserResponse.twitter,
-        'about': throwuserResponse.about,
-        'avatar': throwuserResponse.avatar,
-        'instagram': throwuserResponse.instagram,
-        'facebook': throwuserResponse.facebook,
-      };
-
-      FormData formData = FormData.fromMap(requestData);
 
       response = await _dio.put(
         'https://profile-card-api.vercel.app/api/$username/edit',
-        data: {
-          'fullname': throwuserResponse.fullname,
-          'city': throwuserResponse.city,
-          'country': throwuserResponse.country,
-          'job': throwuserResponse.job,
-          'twitter': throwuserResponse.twitter,
-          'about': throwuserResponse.about,
-          'avatar': throwuserResponse.avatar,
-          'instagram': throwuserResponse.instagram,
-          'facebook': throwuserResponse.facebook,
-        },
+        data: throwuserResponse.toJson(),
         options: Options(
           headers: {
             "Content-Type": "application/json",
@@ -76,14 +53,7 @@ class ProfileRepository {
           },
         ),
       );
-
-      print('Response: ${response.data}');
-      print('Response data: ${response.data['data']}');
-      print('Response FormData :: ${formData}');
-
-      // UserResponse userResponse = UserResponse.fromJson(response.data['data']);
-
-      return Right(response.data);
+      return Right(response.data.toString());
     } on DioException catch (e) {
       String errorMessage = e.response!.data.toString();
       if (e.type == DioExceptionType.badResponse) {
