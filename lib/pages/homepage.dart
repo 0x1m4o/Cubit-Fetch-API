@@ -4,6 +4,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
+import 'package:cubitfetchapi/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,10 +18,10 @@ import 'package:cubitfetchapi/models/user_response.dart';
 import 'package:cubitfetchapi/pages/edit.dart';
 
 class HomePage extends StatefulWidget {
+  late Box box;
   final String tokenResponse;
   final String userResponse;
   LoginResponse? loginResponse;
-  late Box box;
   UserResponse? savedUserResponse;
 
   HomePage({
@@ -53,8 +55,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('widget.loginResponse : ${widget.loginResponse!.username}');
-
     return SafeArea(
       child: Scaffold(
         body: Center(
@@ -75,11 +75,12 @@ class _HomePageState extends State<HomePage> {
                 },
                 success: (_) {
                   return HomePageScaffold(
-                      userResponse: widget.savedUserResponse!,
-                      box: widget.box,
-                      username: widget.userResponse,
-                      token: widget.tokenResponse,
-                      loginResponse: widget.loginResponse!);
+                    userResponse: widget.savedUserResponse!,
+                    loginResponse: widget.loginResponse!,
+                    username: widget.userResponse,
+                    token: widget.tokenResponse,
+                    box: widget.box,
+                  );
                 },
                 error: (_) => homePageError(),
               );
@@ -168,11 +169,15 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                     children: [
                       IconButton(
                           onPressed: () async {
-                            Navigator.pop(context);
+                            context.read<PagenavCubit>().toggleText('Sign Up');
                             await widget.box.delete('loginResp');
                             await widget.box.delete('userResp');
                             await widget.box.close();
                             await Hive.close();
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => SplashScreen(),
+                            ));
                           },
                           icon: const Icon(
                             Icons.arrow_back_ios_rounded,

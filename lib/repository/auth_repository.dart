@@ -7,17 +7,14 @@ import 'package:either_dart/either.dart';
 
 class AuthRepository {
   final dio = Dio();
-
   Future<Either<String, LoginResponse>> signUser(
       {required LoginRequest loginRequest}) async {
     try {
       dio.interceptors
           .add(LogInterceptor(requestBody: true, responseBody: true));
-
       Response response;
       response = await dio.post('https://profile-card-api.vercel.app/api/login',
           data: loginRequest.toJson());
-
       LoginResponse result = LoginResponse.fromJson(response.data);
       return Right(result);
     } on DioException catch (e) {
@@ -25,17 +22,14 @@ class AuthRepository {
       if (e.type == DioExceptionType.badResponse) {
         errorMessage = e.response!.data['error'];
       }
-
       return Left(errorMessage);
     }
   }
-
   Future<Either<String, RegisterResponse>> registerUser(
       {required RegisterRequest registerRequest}) async {
     try {
       dio.interceptors
           .add(LogInterceptor(requestBody: true, responseBody: true));
-
       Response response;
 
       response = await dio.post(
