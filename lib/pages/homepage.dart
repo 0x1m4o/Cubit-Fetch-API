@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 // ignore_for_file: must_be_immutable, avoid_print, prefer_const_constructors
 
 import 'dart:convert';
@@ -8,14 +8,14 @@ import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
 import 'package:cubitfetchapi/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:particles_flutter/particles_flutter.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
 import 'package:cubitfetchapi/models/login_response.dart';
 import 'package:cubitfetchapi/models/user_response.dart';
 import 'package:cubitfetchapi/pages/edit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   late Box box;
@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
 
   void getUserData() async {
     widget.box = await Hive.openBox('box');
+    final finalLoginResponse = await widget.box.get('loginResp');
     widget.box.put('loginResp', widget.loginResponse);
-    final finalLoginResponse = widget.box.get('loginResp');
     if (finalLoginResponse != null) {
       widget.loginResponse = finalLoginResponse!;
     }
@@ -58,33 +58,45 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: BlocConsumer<ResponseCubit, ResponseState>(
-            listener: (context, state) {
-              state.maybeMap(
-                orElse: () {},
-                success: (value) {
-                  widget.savedUserResponse = value.userResponse;
-                  widget.box.put('userResp', widget.savedUserResponse);
-                },
-              );
-            },
-            builder: (context, state) {
-              return state.maybeMap(
-                orElse: () {
-                  return homePageLoading();
-                },
-                success: (_) {
-                  return HomePageScaffold(
-                    userResponse: widget.savedUserResponse!,
-                    loginResponse: widget.loginResponse!,
-                    username: widget.userResponse,
-                    token: widget.tokenResponse,
-                    box: widget.box,
-                  );
-                },
-                error: (_) => homePageError(),
-              );
-            },
+          child: BlocProvider(
+            create: (context) => ResponseCubit(),
+            child: BlocConsumer<ResponseCubit, ResponseState>(
+              listener: (context, state) {
+                state.maybeMap(
+                  orElse: () {
+                    return homePageLoading();
+                  },
+                  success: (value) {
+                    widget.savedUserResponse = value.userResponse;
+                    widget.box.put('userResp', widget.savedUserResponse);
+                  },
+                );
+              },
+              builder: (context, state) {
+                return state.maybeMap(
+                  loading: (_) {
+                    return homePageLoading();
+                  },
+                  orElse: () {
+                    getUserData();
+                    context.read<ResponseCubit>().getAllDataOfUser(
+                        widget.loginResponse!.username,
+                        widget.loginResponse!.token);
+                    return homePageLoading();
+                  },
+                  success: (_) {
+                    return HomePageScaffold(
+                      userResponse: widget.savedUserResponse!,
+                      loginResponse: widget.loginResponse!,
+                      username: widget.userResponse,
+                      token: widget.tokenResponse,
+                      box: widget.box,
+                    );
+                  },
+                  error: (_) => homePageError(),
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -185,25 +197,26 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                           )),
                       IconButton(
                           onPressed: () async {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(
-                                  builder: (context) => BlocProvider.value(
-                                    value: context.read<ResponseCubit>(),
-                                    child: EditPage(
-                                      loginResponse: widget.loginResponse,
-                                      savedUserResponse: widget.userResponse,
-                                      userResponse: widget.username,
-                                      tokenResponse: widget.token,
-                                    ),
+                            final updatedUserResponse =
+                                await Navigator.of(context).push<UserResponse>(
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider.value(
+                                  value: context.read<ResponseCubit>(),
+                                  child: EditPage(
+                                    loginResponse: widget.loginResponse,
+                                    savedUserResponse: widget.userResponse,
+                                    userResponse: widget.username,
+                                    tokenResponse: widget.token,
                                   ),
-                                ))
-                                .then((_) => setState(() {
-                                      context
-                                          .read<ResponseCubit>()
-                                          .getAllDataOfUser(
-                                              widget.loginResponse.username,
-                                              widget.loginResponse.token);
-                                    }));
+                                ),
+                              ),
+                            );
+
+                            if (updatedUserResponse != null) {
+                              setState(() {
+                                widget.userResponse = updatedUserResponse;
+                              });
+                            }
                           },
                           icon: const Icon(
                             Icons.edit,
@@ -212,20 +225,23 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                     ],
                   ),
                 ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(150),
+                    child: Container(
+                        color: Colors.black,
+                        width: 200,
+                        height: 200,
+                        child: bytes != null
+                            ? Image.memory(
+                                fit: BoxFit.cover,
+                                bytes,
+                              )
+                            : Image.network(
+                                'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png',
+                                fit: BoxFit.cover))),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: bytes != null
-                        ? Image.memory(
-                            bytes,
-                            fit: BoxFit.cover,
-                          )
-                        : SizedBox(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
                   child: Text(
                     widget.userResponse.fullname,
                     textAlign: TextAlign.center,
@@ -236,7 +252,8 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
                   child: Text(
                     textAlign: TextAlign.center,
                     '${widget.userResponse.city}, ${widget.userResponse.country}',
@@ -247,7 +264,8 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
                   child: Text(
                     widget.userResponse.job,
                     textAlign: TextAlign.center,
@@ -258,7 +276,8 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
                   child: Text(
                     textAlign: TextAlign.center,
                     widget.userResponse.about,
@@ -269,22 +288,87 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      OutlinedButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Instagram',
-                            style: TextStyle(color: Colors.white30),
+                      IconButton(
+                          onPressed: () async {
+                            Uri url = Uri.parse(widget.userResponse.instagram);
+                            if (!await launchUrl(url)) {
+                              throw ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Could not launch $url'),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                margin: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height -
+                                        100,
+                                    right: 20,
+                                    left: 20),
+                              ));
+                            }
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.instagram,
+                            color: Colors.white54,
                           )),
-                      OutlinedButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Twitter',
-                            style: TextStyle(color: Colors.white30),
-                          ))
+                      IconButton(
+                          onPressed: () async {
+                            Uri url = Uri.parse(widget.userResponse.facebook);
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url);
+                            } else {
+                              throw ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Could not launch $url'),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                margin: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height -
+                                        100,
+                                    right: 20,
+                                    left: 20),
+                              ));
+                            }
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.facebook,
+                            color: Colors.white54,
+                          )),
+                      IconButton(
+                          onPressed: () async {
+                            Uri url = Uri.parse(widget.userResponse.twitter);
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(url);
+                            } else {
+                              throw ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Could not launch $url'),
+                                backgroundColor: Colors.red,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                margin: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height -
+                                        100,
+                                    right: 20,
+                                    left: 20),
+                              ));
+                            }
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.twitter,
+                            color: Colors.white54,
+                          )),
                     ],
                   ),
                 )
@@ -292,7 +376,7 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
             ),
           ),
         ),
-      ),
+      )
     ]);
   }
 }

@@ -1,8 +1,14 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
-import 'package:cubitfetchapi/main.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:cubitfetchapi/models/login_response.dart';
 import 'package:cubitfetchapi/models/user_response.dart';
-import 'package:cubitfetchapi/pages/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -12,11 +18,8 @@ class EditPage extends StatefulWidget {
   TextEditingController userC = TextEditingController();
   final String tokenResponse;
   final String userResponse;
-  LoginResponse? loginResponse; // Add this line
-
   late Box box;
-  // ignore: prefer_typing_uninitialized_variables
-
+  LoginResponse? loginResponse;
   UserResponse? savedUserResponse;
 
   TextEditingController avatarC = TextEditingController();
@@ -28,10 +31,11 @@ class EditPage extends StatefulWidget {
   TextEditingController instagram = TextEditingController();
   TextEditingController facebook = TextEditingController();
   TextEditingController twitter = TextEditingController();
+
   EditPage({
     super.key,
     this.savedUserResponse,
-    this.loginResponse, // Add this line
+    this.loginResponse,
     this.tokenResponse = '',
     this.userResponse = '',
   });
@@ -41,6 +45,18 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
+  XFile? image;
+  String base64Image = '';
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    setState(() {
+      image = img;
+    });
+  }
+
   @override
   void initState() {
     widget.fullNameC.text = widget.savedUserResponse!.fullname;
@@ -63,86 +79,143 @@ class _EditPageState extends State<EditPage> {
         listener: (context, state) {
           state.maybeMap(
             orElse: () {},
-            editSuccess: (value) => Navigator.pop(context),
+            editSuccess: (value) =>
+                Navigator.pop(context, widget.savedUserResponse),
           );
         },
         builder: (context, state) {
+          final regex = RegExp(r'base64,(.*)');
+          final match = regex.firstMatch(widget.avatarC.text);
+          final base64String = match?.group(1);
+
+          Uint8List? bytes =
+              base64String != null ? base64Decode(base64String) : null;
           return Scaffold(
             body: Padding(
               padding: const EdgeInsets.all(20),
-              child: ListView(children: [
-                TextForm(
-                    icon: Icons.add_card_rounded,
-                    controller: widget.fullNameC,
-                    label: 'Fullname',
-                    hint: 'Enter your Fullname'),
-                TextForm(
-                    icon: Icons.location_city,
-                    controller: widget.cityC,
-                    label: 'City',
-                    hint: 'Enter your City'),
-                TextForm(
-                    icon: Icons.flag_outlined,
-                    controller: widget.countryC,
-                    label: 'Country',
-                    hint: 'Enter your Country'),
-                TextForm(
-                    icon: Icons.work,
-                    controller: widget.jobC,
-                    label: 'Job',
-                    hint: 'Enter your Job'),
-                TextForm(
-                    icon: Icons.work,
-                    controller: widget.aboutC,
-                    label: 'About',
-                    hint: 'Enter your About'),
-                TextForm(
-                    icon: Icons.work,
-                    controller: widget.instagram,
-                    label: 'Instagram',
-                    hint: 'Enter your Instagram'),
-                TextForm(
-                    icon: Icons.password,
-                    controller: widget.avatarC,
-                    label: 'Avatar',
-                    hint: 'Enter your Avatar'),
-                TextForm(
-                    icon: Icons.work,
-                    controller: widget.facebook,
-                    label: 'Facebook',
-                    hint: 'Enter your Facebook'),
-                TextForm(
-                    icon: Icons.work,
-                    controller: widget.twitter,
-                    label: 'About',
-                    hint: 'Enter your About'),
-                SizedBox(
-                  height: 55,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 73, 66, 228)),
-                      onPressed: () async {
-                        widget.savedUserResponse = UserResponse(
-                          job: widget.jobC.text,
-                          fullname: widget.fullNameC.text,
-                          city: widget.cityC.text,
-                          country: widget.countryC.text,
-                          avatar: widget.avatarC.text,
-                          instagram: widget.instagram.text,
-                          about: widget.aboutC.text,
-                          facebook: widget.facebook.text,
-                          twitter: widget.twitter.text,
-                        );
-                        context.read<ResponseCubit>().editDataUser(
-                              widget.userResponse,
-                              widget.tokenResponse,
-                              widget.savedUserResponse!,
-                            );
-                      },
-                      child: const Text('Submit')),
-                ),
-              ]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(150),
+                      child: SizedBox(
+                        width: 200,
+                        height: 200,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(150),
+                          onTap: () async {
+                            image = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            final bytes = await File(image!.path).readAsBytes();
+                            final imageFormat = image!.path.split('.').last;
+                            setState(() {
+                              base64Image = "data:image/$imageFormat;base64," +
+                                  base64Encode(bytes);
+
+                              widget.avatarC.text = base64Image;
+                            });
+                          },
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(150),
+                              child: Container(
+                                  color: Colors.black,
+                                  width: 200,
+                                  height: 200,
+                                  child: bytes != null
+                                      ? Image.memory(
+                                          fit: BoxFit.cover,
+                                          bytes,
+                                        )
+                                      : Image.network(
+                                          'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png',
+                                          fit: BoxFit.cover))),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    'Click Image to Edit Profile Picture',
+                    style: TextStyle(fontSize: 11),
+                  ),
+                  Expanded(
+                    child: ScrollConfiguration(
+                      behavior:
+                          const ScrollBehavior().copyWith(overscroll: false),
+                      child: ListView(children: [
+                        TextForm(
+                            icon: Icons.add_card_rounded,
+                            controller: widget.fullNameC,
+                            label: 'Fullname',
+                            hint: 'Enter your Fullname'),
+                        TextForm(
+                            icon: Icons.location_city,
+                            controller: widget.cityC,
+                            label: 'City',
+                            hint: 'Enter your City'),
+                        TextForm(
+                            icon: Icons.flag_outlined,
+                            controller: widget.countryC,
+                            label: 'Country',
+                            hint: 'Enter your Country'),
+                        TextForm(
+                            icon: Icons.work,
+                            controller: widget.jobC,
+                            label: 'Job',
+                            hint: 'Enter your Job'),
+                        TextForm(
+                            icon: Icons.subtitles,
+                            controller: widget.aboutC,
+                            label: 'About',
+                            hint: 'Enter your About'),
+                        TextForm(
+                            icon: FontAwesomeIcons.instagram,
+                            controller: widget.instagram,
+                            label: 'Instagram',
+                            hint: 'Enter your Instagram Account'),
+                        TextForm(
+                            icon: FontAwesomeIcons.facebook,
+                            controller: widget.facebook,
+                            label: 'Facebook',
+                            hint: 'Enter your Facebook Account'),
+                        TextForm(
+                            icon: FontAwesomeIcons.twitter,
+                            controller: widget.twitter,
+                            label: 'Twitter',
+                            hint: 'Enter your Twitter Account'),
+                        SizedBox(
+                          height: 55,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 73, 66, 228)),
+                              onPressed: () async {
+                                widget.savedUserResponse = UserResponse(
+                                  job: widget.jobC.text,
+                                  fullname: widget.fullNameC.text,
+                                  city: widget.cityC.text,
+                                  country: widget.countryC.text,
+                                  avatar: widget.avatarC.text,
+                                  instagram: widget.instagram.text,
+                                  about: widget.aboutC.text,
+                                  facebook: widget.facebook.text,
+                                  twitter: widget.twitter.text,
+                                );
+
+                                context.read<ResponseCubit>().editDataUser(
+                                      widget.userResponse,
+                                      widget.tokenResponse,
+                                      widget.savedUserResponse!,
+                                    );
+                              },
+                              child: const Text('Submit')),
+                        ),
+                      ]),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
