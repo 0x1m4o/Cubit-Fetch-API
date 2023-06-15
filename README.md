@@ -1,3 +1,3 @@
 # Profile App
 
-API : [Badzlan](https://github.com/badzlan)
+Thanks for API  @[Badzlan](https://github.com/badzlan)
