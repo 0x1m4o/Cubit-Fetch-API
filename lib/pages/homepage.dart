@@ -4,31 +4,28 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
-import 'package:cubitfetchapi/pages/splash_screen.dart';
+import 'package:profileapp/cubits/pagenav/pagenav_cubit.dart';
+import 'package:profileapp/pages/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:particles_flutter/particles_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
-import 'package:cubitfetchapi/models/login_response.dart';
-import 'package:cubitfetchapi/models/user_response.dart';
-import 'package:cubitfetchapi/pages/edit.dart';
+import 'package:profileapp/cubits/response/response_cubit.dart';
+import 'package:profileapp/models/login_response.dart';
+import 'package:profileapp/models/user_response.dart';
+import 'package:profileapp/pages/edit.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '/utils/constant.dart' as constants;
 
 class HomePage extends StatefulWidget {
   late Box box;
-  final String tokenResponse;
-  final String userResponse;
   LoginResponse? loginResponse;
   UserResponse? savedUserResponse;
 
   HomePage({
     super.key,
-    this.tokenResponse = '',
     this.loginResponse,
-    this.userResponse = '',
   });
 
   @override
@@ -39,18 +36,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<ResponseCubit>().getAllDataOfUser(
-        widget.loginResponse!.username, widget.loginResponse!.token);
     getUserData();
   }
 
   void getUserData() async {
     widget.box = await Hive.openBox('box');
-    final finalLoginResponse = await widget.box.get('loginResp');
-    widget.box.put('loginResp', widget.loginResponse);
-    if (finalLoginResponse != null) {
-      widget.loginResponse = finalLoginResponse!;
-    }
+    widget.loginResponse = await widget.box.get(constants.loginRespStorage);
   }
 
   @override
@@ -63,17 +54,27 @@ class _HomePageState extends State<HomePage> {
             child: BlocConsumer<ResponseCubit, ResponseState>(
               listener: (context, state) {
                 state.maybeMap(
+                  editSuccess: (_) {
+                    return homePageLoading();
+                  },
+                  loading: (value) {
+                    return homePageLoading();
+                  },
                   orElse: () {
                     return homePageLoading();
                   },
                   success: (value) {
                     widget.savedUserResponse = value.userResponse;
                     widget.box.put('userResp', widget.savedUserResponse);
+                    setState(() {});
                   },
                 );
               },
               builder: (context, state) {
                 return state.maybeMap(
+                  editSuccess: (_) {
+                    return homePageLoading();
+                  },
                   loading: (_) {
                     return homePageLoading();
                   },
@@ -88,8 +89,6 @@ class _HomePageState extends State<HomePage> {
                     return HomePageScaffold(
                       userResponse: widget.savedUserResponse!,
                       loginResponse: widget.loginResponse!,
-                      username: widget.userResponse,
-                      token: widget.tokenResponse,
                       box: widget.box,
                     );
                   },
@@ -118,16 +117,13 @@ Widget homePageError() {
 
 class HomePageScaffold extends StatefulWidget {
   UserResponse userResponse;
-  Box box;
-  String username;
-  String token;
   LoginResponse loginResponse;
+  late Box box;
+
   HomePageScaffold({
     Key? key,
     required this.userResponse,
     required this.loginResponse,
-    required this.username,
-    required this.token,
     required this.box,
   }) : super(key: key);
 
@@ -205,8 +201,6 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                                   child: EditPage(
                                     loginResponse: widget.loginResponse,
                                     savedUserResponse: widget.userResponse,
-                                    userResponse: widget.username,
-                                    tokenResponse: widget.token,
                                   ),
                                 ),
                               ),
@@ -320,9 +314,7 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                       IconButton(
                           onPressed: () async {
                             Uri url = Uri.parse(widget.userResponse.facebook);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url);
-                            } else {
+                            if (!await launchUrl(url)) {
                               throw ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                 content: Text('Could not launch $url'),
@@ -346,9 +338,7 @@ class _HomePageScaffoldState extends State<HomePageScaffold> {
                       IconButton(
                           onPressed: () async {
                             Uri url = Uri.parse(widget.userResponse.twitter);
-                            if (await canLaunchUrl(url)) {
-                              await launchUrl(url);
-                            } else {
+                            if (!await launchUrl(url)) {
                               throw ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                 content: Text('Could not launch $url'),

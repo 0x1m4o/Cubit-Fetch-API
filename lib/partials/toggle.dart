@@ -1,6 +1,6 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
-import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
-import 'package:cubitfetchapi/router/page_name.dart';
+import 'package:profileapp/cubits/pagenav/pagenav_cubit.dart';
+import 'package:profileapp/router/page_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
-import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
-import 'package:cubitfetchapi/partials/toggle.dart';
-import 'package:cubitfetchapi/models/login_request.dart';
-import 'package:cubitfetchapi/pages/homepage.dart';
+import 'package:profileapp/cubits/auth/auth_cubit.dart';
+import 'package:profileapp/partials/toggle.dart';
+import 'package:profileapp/models/login_request.dart';
+import 'package:profileapp/pages/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:particles_flutter/particles_flutter.dart';
@@ -44,12 +44,9 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   });
             } else if (state is AuthLoginSuccess) {
+              context.read<AuthCubit>().saveLoginResponse(state.data);
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => HomePage(
-                  loginResponse: state.data,
-                  userResponse: state.data.username,
-                  tokenResponse: state.data.token,
-                ),
+                builder: (context) => HomePage(loginResponse: state.data),
               ));
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(state.data.msg),

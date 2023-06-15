@@ -1,7 +1,7 @@
-import 'package:cubitfetchapi/models/login_request.dart';
-import 'package:cubitfetchapi/models/login_response.dart';
-import 'package:cubitfetchapi/models/register_request.dart';
-import 'package:cubitfetchapi/models/register_response.dart';
+import 'package:profileapp/models/login_request.dart';
+import 'package:profileapp/models/login_response.dart';
+import 'package:profileapp/models/register_request.dart';
+import 'package:profileapp/models/register_response.dart';
 import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
 
@@ -25,6 +25,7 @@ class AuthRepository {
       return Left(errorMessage);
     }
   }
+
   Future<Either<String, RegisterResponse>> registerUser(
       {required RegisterRequest registerRequest}) async {
     try {

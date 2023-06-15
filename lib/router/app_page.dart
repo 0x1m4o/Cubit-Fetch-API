@@ -1,10 +1,10 @@
-import 'package:cubitfetchapi/models/login_response.dart';
-import 'package:cubitfetchapi/pages/edit.dart';
-import 'package:cubitfetchapi/pages/homepage.dart';
-import 'package:cubitfetchapi/pages/login.dart';
-import 'package:cubitfetchapi/pages/register.dart';
-import 'package:cubitfetchapi/pages/splash_screen.dart';
-import 'package:cubitfetchapi/router/page_name.dart';
+import 'package:profileapp/models/login_response.dart';
+import 'package:profileapp/pages/edit.dart';
+import 'package:profileapp/pages/homepage.dart';
+import 'package:profileapp/pages/login.dart';
+import 'package:profileapp/pages/register.dart';
+import 'package:profileapp/pages/splash_screen.dart';
+import 'package:profileapp/router/page_name.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(initialLocation: PageName.splash, routes: [

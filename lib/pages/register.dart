@@ -1,18 +1,18 @@
 // ignore_for_file: avoid_print, must_be_immutable, use_build_context_synchronously
 
-import 'package:cubitfetchapi/cubits/pagenav/pagenav_cubit.dart';
-import 'package:cubitfetchapi/models/login_response.dart';
-import 'package:cubitfetchapi/models/user_response.dart';
-import 'package:cubitfetchapi/pages/homepage.dart';
-import 'package:cubitfetchapi/partials/toggle.dart';
+import 'package:profileapp/cubits/pagenav/pagenav_cubit.dart';
+import 'package:profileapp/models/login_response.dart';
+import 'package:profileapp/models/user_response.dart';
+import 'package:profileapp/pages/homepage.dart';
+import 'package:profileapp/partials/toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:particles_flutter/particles_flutter.dart';
-import 'package:cubitfetchapi/cubits/auth/auth_cubit.dart';
-import 'package:cubitfetchapi/models/register_request.dart';
-import 'package:cubitfetchapi/router/page_name.dart';
+import 'package:profileapp/cubits/auth/auth_cubit.dart';
+import 'package:profileapp/models/register_request.dart';
+import 'package:profileapp/router/page_name.dart';
 import '../partials/text_form.dart';
 
 class RegisterPage extends StatefulWidget {

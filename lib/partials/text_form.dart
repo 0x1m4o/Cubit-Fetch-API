@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TextForm extends StatelessWidget {
+  final TextEditingController controller;
+  final IconData icon;
+  final String label;
+  final String hint;
+  
   const TextForm({
     Key? key,
     required this.controller,
@@ -8,11 +13,6 @@ class TextForm extends StatelessWidget {
     required this.icon,
     required this.hint,
   }) : super(key: key);
-
-  final TextEditingController controller;
-  final String label;
-  final IconData icon;
-  final String hint;
 
   @override
   Widget build(BuildContext context) {

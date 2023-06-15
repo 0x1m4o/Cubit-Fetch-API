@@ -1,27 +1,28 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cubitfetchapi/cubits/response/response_cubit.dart';
+import 'package:profileapp/cubits/response/response_cubit.dart';
+import 'package:profileapp/main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:cubitfetchapi/models/login_response.dart';
-import 'package:cubitfetchapi/models/user_response.dart';
+import 'package:profileapp/models/login_response.dart';
+import 'package:profileapp/models/user_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../partials/text_form.dart';
+import '/utils/constant.dart' as constants;
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class EditPage extends StatefulWidget {
   TextEditingController userC = TextEditingController();
-  final String tokenResponse;
-  final String userResponse;
-  late Box box;
   LoginResponse? loginResponse;
   UserResponse? savedUserResponse;
-
+  XFile? image;
+  String base64Image = '';
+  final ImagePicker picker = ImagePicker();
   TextEditingController avatarC = TextEditingController();
   TextEditingController fullNameC = TextEditingController();
   TextEditingController cityC = TextEditingController();
@@ -36,8 +37,6 @@ class EditPage extends StatefulWidget {
     super.key,
     this.savedUserResponse,
     this.loginResponse,
-    this.tokenResponse = '',
-    this.userResponse = '',
   });
 
   @override
@@ -45,20 +44,23 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-  XFile? image;
-  String base64Image = '';
-  final ImagePicker picker = ImagePicker();
-
   Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
+    widget.image = await widget.picker.pickImage(source: media);
+    final bytes = await File(widget.image!.path).readAsBytes();
+    final imageFormat = widget.image!.path.split('.').last;
+    widget.base64Image =
+        "data:image/$imageFormat;base64," + base64Encode(bytes);
+    widget.avatarC.text = widget.base64Image;
+  }
 
-    setState(() {
-      image = img;
-    });
+  void getUserData() async {
+    box = await Hive.openBox('box');
+    widget.loginResponse = await box!.get(constants.loginRespStorage);
   }
 
   @override
   void initState() {
+    getUserData();
     widget.fullNameC.text = widget.savedUserResponse!.fullname;
     widget.aboutC.text = widget.savedUserResponse!.about;
     widget.avatarC.text = widget.savedUserResponse!.avatar;
@@ -106,16 +108,7 @@ class _EditPageState extends State<EditPage> {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(150),
                           onTap: () async {
-                            image = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            final bytes = await File(image!.path).readAsBytes();
-                            final imageFormat = image!.path.split('.').last;
-                            setState(() {
-                              base64Image = "data:image/$imageFormat;base64," +
-                                  base64Encode(bytes);
-
-                              widget.avatarC.text = base64Image;
-                            });
+                            getImage(ImageSource.gallery);
                           },
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(150),
@@ -204,8 +197,8 @@ class _EditPageState extends State<EditPage> {
                                 );
 
                                 context.read<ResponseCubit>().editDataUser(
-                                      widget.userResponse,
-                                      widget.tokenResponse,
+                                      widget.loginResponse!.username,
+                                      widget.loginResponse!.token,
                                       widget.savedUserResponse!,
                                     );
                               },

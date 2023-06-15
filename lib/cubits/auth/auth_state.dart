@@ -6,6 +6,8 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
+class SaveAuth extends AuthState {}
+
 class AuthError extends AuthState {
   final String errorMsg;
   AuthError({

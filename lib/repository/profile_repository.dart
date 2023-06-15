@@ -1,4 +1,4 @@
-import 'package:cubitfetchapi/models/user_response.dart';
+import 'package:profileapp/models/user_response.dart';
 import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
 
